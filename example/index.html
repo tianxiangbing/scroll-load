@@ -1,0 +1,28 @@
+﻿<!DOCTYPE>
+<html>
+	<head>
+		<title>滚动加载</title>
+		<style>
+		.ui-loading{text-align: center;line-height: 2;background-color: #ccc;cursor: pointer;}
+		</style>
+	</head>
+	<body>
+	</br/>
+	</br/>
+	</br/>
+		<div id="content">
+		</div>
+		<script id="entry-template" type="text/x-handlebars-template">
+		{{#each data}}
+		<div><img src="{{url}}"/></div>
+		<div>{{title}}</div>
+		{{/each}}
+		</script>
+		<script src="../dist/jquery-1.9.1.min.js"></script>
+		<script src="../dist/handlebars-v3.0.0.js"></script>
+		<script src="../dist/scroll-load-jquery.js"></script>
+		<script>
+		$('#content').ScrollLoad({tpl:"#entry-template",url:"data.json"});
+		</script>
+	</body>
+</html>
