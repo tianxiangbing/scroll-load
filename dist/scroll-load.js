@@ -16,9 +16,11 @@ function ScrollLoad() {
 ScrollLoad.prototype = {
 	init: function(settings) {
 		this.settings = $.extend({}, settings);
-		this.load = $('<div class="ui-loading">点击加载更多</div>');
+		this.load = this.settings.loadmore || $('<div class="ui-loading">点击加载更多</div>');
 		this.container = this.settings.container;
-		this.container.append('<div class="scroll-content"/>');
+		if (this.container.children().size() == 0) {
+			this.container.append('<div class="scroll-content"/>');
+		}
 		this.container.append(this.load);
 		this.url = this.settings.url;
 		this.page = this.settings.page || 1;
@@ -46,12 +48,12 @@ ScrollLoad.prototype = {
 		});
 	},
 	bindEvent: function() {
-		if (this.container.filter(':visible')) {
+		if (this.container.size()) {
 			var _this = this;
 			$(window).scroll(function() {
 				_this.checkPosition();
 			});
-			_this.touch($('.ui-loading', this.container), function() {
+			_this.touch(_this.load, function() {
 				_this.ajaxData();
 			});
 		}
@@ -78,7 +80,7 @@ ScrollLoad.prototype = {
 		$.ajax({
 			url: _this.url,
 			type: _this.settings.type || "get",
-			datatype: "json",
+			dataType: "json",
 			cache: false,
 			data: _this.param,
 			timeout: 30000,
@@ -94,6 +96,7 @@ ScrollLoad.prototype = {
 				setTimeout(function() {
 					_this.ajax = false;
 				}, 1000);
+				_this.load.html('点击加载更多');
 			}
 		});
 	},
@@ -105,8 +108,8 @@ ScrollLoad.prototype = {
 		var tpl = typeof this.settings.tpl === "string" ? $(this.settings.tpl) : this.settings.tpl;
 		var source = tpl.html();
 		var template = Handlebars.compile(source);
-		var html = $(template(result));
-		this.container.children('.scroll-content').append(html)
-		this.settings.callback && this.settings.callback(this.container,result,html);
+		var html = template(result);
+		this.container.children().first().append(html)
+		this.settings.callback && this.settings.callback(this.container, result);
 	}
 };

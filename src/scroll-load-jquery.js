@@ -18,4 +18,4 @@
 		});
 		return list;
 	}
-})(jQuery);
+})($);
