@@ -1,4 +1,4 @@
-/*! scroll-load - v1.0.0 - tianxiangbing - http://www.lovewebgames.com/jsmodule/scroll-load.html 2015-03-27 */
+/*! scroll-load - v1.0.0 - tianxiangbing - http://www.lovewebgames.com/jsmodule/scroll-load.html 2015-03-30 */
 function ScrollLoad() {
 	this.container;
 	this.url;
@@ -44,9 +44,11 @@ ScrollLoad.prototype = {
 	bindEvent: function() {
 		if (this.container.size()) {
 			var _this = this;
-			$(window).scroll(function() {
-				_this.checkPosition();
-			});
+			if(_this.settings.scrollLoad){
+				$(window).scroll(function() {
+					_this.checkPosition();
+				});
+			}
 			_this.touch(_this.load, function() {
 				_this.ajaxData();
 			});

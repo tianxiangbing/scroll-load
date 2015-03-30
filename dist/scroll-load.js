@@ -50,9 +50,11 @@ ScrollLoad.prototype = {
 	bindEvent: function() {
 		if (this.container.size()) {
 			var _this = this;
-			$(window).scroll(function() {
-				_this.checkPosition();
-			});
+			if(_this.settings.scrollLoad){
+				$(window).scroll(function() {
+					_this.checkPosition();
+				});
+			}
 			_this.touch(_this.load, function() {
 				_this.ajaxData();
 			});
