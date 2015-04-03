@@ -58,12 +58,12 @@
 			}
 		},
 		checkPosition: function() {
-			var offsetH = $('.scroll-content',this.scrolltrigger).height();
+			var offsetH = $(this.container).children().first().height();
 			var height = this.load.height();
-			var clientHeight = this.scrolltrigger[0].clientHeight; //可视区域
-			var clientWidth = this.scrolltrigger[0].clientWidth;
+			var clientHeight = this.scrolltrigger[0].clientHeight || document.documentElement.clientHeight || document.body.clientHeight; //可视区域
+			var clientWidth = this.scrolltrigger[0].clientWidth || document.documentElement.clientWidth || document.body.clientWidth;
 			var scrollTop = this.scrolltrigger.scrollTop();
-			if (offsetH + height/2 <= clientHeight+ scrollTop ) {
+			if (offsetH + height / 2 <= clientHeight + scrollTop) {
 				this.ajaxData();
 			}
 		},
