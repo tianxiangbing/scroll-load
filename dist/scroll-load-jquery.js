@@ -58,14 +58,13 @@
 			}
 		},
 		checkPosition: function() {
-			var offset = this.container.offset();
-			var height = this.container.height();
-			var clientHeight = window.innerHeight || document.documentElement.clientHeight; //可视区域
-			var clientWidth = window.innerWidth || document.documentElement.clientWidth;
-			var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
-			var _this = this;
-			if (offset.top + height <= clientHeight + scrollTop) {
-				_this.ajaxData();
+			var offsetH = $('.scroll-content',this.scrolltrigger).height();
+			var height = this.load.height();
+			var clientHeight = this.scrolltrigger[0].clientHeight; //可视区域
+			var clientWidth = this.scrolltrigger[0].clientWidth;
+			var scrollTop = this.scrolltrigger.scrollTop();
+			if (offsetH + height/2 <= clientHeight+ scrollTop ) {
+				this.ajaxData();
 			}
 		},
 		ajaxData: function() {
@@ -94,7 +93,7 @@
 				complete: function() {
 					setTimeout(function() {
 						_this.ajax = false;
-					}, 1000);
+					}, 500);
 					_this.load.html('点击加载更多');
 				}
 			});
