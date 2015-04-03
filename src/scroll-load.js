@@ -19,6 +19,7 @@
 		init: function(settings) {
 			this.settings = $.extend({}, settings);
 			this.load = this.settings.loadmore || $('<div class="ui-loading">点击加载更多</div>');
+			this.scrolltrigger = $(this.settings.scrolltrigger || window);
 			this.container = this.settings.container;
 			if (this.container.children().size() == 0) {
 				this.container.append('<div class="scroll-content"/>');
@@ -53,7 +54,7 @@
 			if (this.container.size()) {
 				var _this = this;
 				if (_this.settings.scrollLoad) {
-					$(window).scroll(function() {
+					_this.scrolltrigger.scroll(function() {
 						_this.checkPosition();
 					});
 				}
