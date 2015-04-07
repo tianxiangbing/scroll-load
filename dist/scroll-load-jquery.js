@@ -1,7 +1,34 @@
-/*! scroll-load - v1.0.0 - tianxiangbing - http://www.lovewebgames.com/jsmodule/scroll-load.html 2015-04-03 */
+/*
+ * Created with Sublime Text 2.
+ * User: 田想兵
+ * Date: 2015-03-26
+ * Time: 14:39:30
+ * Contact: 55342775@qq.com
+ */
 ;
-(function($) {
-	window.ScrollLoad = function() {
+(function(root, factory) {
+	//amd
+	if (typeof define === 'function' && define.amd) {
+		define(['$'], factory);
+	} else if (typeof exports === 'object') { //umd
+		module.exports = factory();
+	} else {
+		root.ScrollLoad = factory(window.Zepto || window.jQuery || $);
+	}
+})(this, function($) {
+	$.fn.ScrollLoad = function(settings) {
+		var list = [];
+		$(this).each(function() {
+			var scroll = new ScrollLoad();
+			var options = $.extend({
+				container: $(this)
+			}, settings);
+			scroll.init(options);
+			list.push(scroll);
+		});
+		return list;
+	};
+	var ScrollLoad = function() {
 		this.container;
 		this.url;
 		this.param;
@@ -111,18 +138,5 @@
 			this.settings.callback && this.settings.callback(this.container, result);
 		}
 	};
-})(window.Zepto || window.jQuery);
-;(function($) {
-	$.fn.ScrollLoad = function(settings) {
-		var list = [];
-		$(this).each(function() {
-			var scroll = new ScrollLoad();
-			var options = $.extend({
-				container: $(this)
-			}, settings);
-			scroll.init(options);
-			list.push(scroll);
-		});
-		return list;
-	}
-})(window.Zepto || window.jQuery);
+	return ScrollLoad;
+});

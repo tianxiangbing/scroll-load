@@ -5,7 +5,6 @@
  * Time: 14:11:42
  * Contact: 55342775@qq.com
  */
-
 var fs = require("fs");
 var path = require("path");
 module.exports = function(grunt) {
@@ -17,11 +16,15 @@ module.exports = function(grunt) {
 	config.publishVersion = config.pkg.version;
 	config.uglify = {
 		options: {
-			banner: '/*! <%= pkg.name %> <%=pkg.family%> <%=pkg.author.url%> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
+			banner: '/*! <%= pkg.name %>  v<%= pkg.version %>\n* author:<%=pkg.family%> email:<%=pkg.author.email%>\n* demo:<%=pkg.author.url%> \n* git:<%=pkg.git%>  <%= grunt.template.today("yyyy-mm-dd") %> */\n',
 		},
 		build: {
-			src: ['src/<%= pkg.name %>.js', '!*.min.css'],
+			src: ['src/<%= pkg.name %>.js'],
 			dest: 'dist/<%= pkg.name %>.min.js'
+		},
+		handlebars:{
+			src:'src/handlebars-v3.0.0.js',
+			dest:'dist/handlebars-v3.0.0.min.js'
 		}
 	};
 	config.cssmin = {
@@ -48,12 +51,15 @@ module.exports = function(grunt) {
 			flatten: true,
 			filter: 'isFile',
 		},
+		jquery:{
+			src: 'src/<%= pkg.name %>.js',
+			dest: 'dist/<%= pkg.name %>-jquery.js'
+		}
 	};
 	config.concat = {
 		options: {
 			stripBanners: true,
-			banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - <%=pkg.family%> - <%=pkg.author.url%> ' +
-				'<%= grunt.template.today("yyyy-mm-dd") %> */\n',
+			banner: '/*! <%= pkg.name %>  v<%= pkg.version %>\n* author:<%=pkg.family%> email:<%=pkg.author.email%>\n* demo:<%=pkg.author.url%> \n* git:<%=pkg.git%>  <%= grunt.template.today("yyyy-mm-dd") %> */\n'
 		},
 		dist: {
 			src: ['src/scroll-load.js', 'src/scroll-load-jquery.js'],
@@ -61,8 +67,8 @@ module.exports = function(grunt) {
 		},
 	};
 	config.uglify.uplifyJquery = {
-		src: ['dist/scroll-load-jquery.js'],
-		dest: 'dist/scroll-load-jquery.min.js'
+		src: ['dist/<%= pkg.name %>.js'],
+		dest: 'dist/<%= pkg.name %>-jquery.min.js'
 	};
 	config.watch={
 		scripts:{
@@ -85,8 +91,8 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-copy');
-	grunt.loadNpmTasks('grunt-contrib-concat');
+	// grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	// 默认被执行的任务列表。
-	grunt.registerTask('default', ['uglify', 'cssmin', 'copy', 'concat', 'uglify:uplifyJquery']);
+	grunt.registerTask('default', ['uglify', 'cssmin', 'copy', 'uglify:uplifyJquery']);
 };
