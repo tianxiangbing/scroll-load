@@ -9,13 +9,20 @@
 (function(root, factory) {
 	//amd
 	if (typeof define === 'function' && define.amd) {
-		define(['$'], factory);
+		define(['$', 'handlebars'], factory);
 	} else if (typeof exports === 'object') { //umd
 		module.exports = factory();
 	} else {
-		root.ScrollLoad = factory(window.Zepto || window.jQuery || $);
+		root.ScrollLoad = factory(window.Zepto || window.jQuery || $, Handlebars);
 	}
-})(this, function($) {
+})(this, function($, Handlebars) {
+	Handlebars.registerHelper('isnodata', function(data,options) {
+		if(!data || data.length ==0){
+			return options.fn(this);
+		}else{
+			return options.inverse(this);
+		}
+	});
 	$.fn.ScrollLoad = function(settings) {
 		var list = [];
 		$(this).each(function() {
@@ -118,18 +125,22 @@
 					_this.page++;
 				},
 				complete: function() {
-					setTimeout(function() {
+					// setTimeout(function() {
 						_this.ajax = false;
-					}, 500);
+					// }, 500);
 					_this.load.html('点击加载更多');
+					_this.checkPosition();
 				}
 			});
 		},
 		format: function(result) {
+			if((!result.data ||　result.data.length==0) && this.page == 1){
+				result.isnodata = true;
+			}
 			if (!(result.data && result.data.length)) {
 				result.nodata = true;
 				this.load.remove();
-			};
+			}
 			var tpl = typeof this.settings.tpl === "string" ? $(this.settings.tpl) : this.settings.tpl;
 			var source = tpl.html();
 			var template = Handlebars.compile(source);
