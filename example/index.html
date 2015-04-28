@@ -4,8 +4,11 @@
 		<title>滚动加载</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 		<style>
+		html,body{padding:0;}
 		#content{height:300px;overflow: auto;}
-		.ui-loading{text-align: center;line-height: 2;background-color: #ccc;cursor: pointer;}
+		.ui-loading{ position: relative; width:100%;display:block;clear:both;text-align: center;line-height: 40px;cursor: pointer;}
+.ui-loading hr{margin-top:-20px;border:none;border-top:1px solid #b6b6b6;width: 90%;margin-left: 5%;}
+.ui-loading span{padding: 0 20px;color: #2E435D;font-size: 14px;background:#fff;}
 		</style>
 	</head>
 	<body>
@@ -22,7 +25,7 @@
 		</script>
 		<script src="../dist/jquery-1.9.1.min.js"></script>
 		<script src="../dist/handlebars-v3.0.0.js"></script>
-		<script src="../dist/scroll-load-jquery.js"></script>
+		<script src="../src/scroll-load.js"></script>
 		<script>
 		$('#content').ScrollLoad({tpl:"#entry-template",url:"data.json",scrollLoad:true,scrolltrigger:"#content"});
 		</script>

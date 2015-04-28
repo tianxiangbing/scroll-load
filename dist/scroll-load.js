@@ -46,7 +46,7 @@
 	ScrollLoad.prototype = {
 		init: function(settings) {
 			this.settings = $.extend({}, settings);
-			this.load = this.settings.loadmore || $('<div class="ui-loading">点击加载更多</div>');
+			this.load = this.settings.loadmore || $('<div class="ui-loading"><span>下拉查看更多</span><hr/></div>');
 			this.scrolltrigger = $(this.settings.scrolltrigger || window);
 			this.container = this.settings.container;
 			if (this.container.children().size() == 0) {
@@ -107,7 +107,7 @@
 				return false;
 			}
 			_this.ajax = true;
-			this.load.html('正在加载中...');
+			this.load.find('span').html('加载中...');
 			this.param[this.pagename] = this.page;
 			$.ajax({
 				url: _this.url,
@@ -128,7 +128,7 @@
 					// setTimeout(function() {
 						_this.ajax = false;
 					// }, 500);
-					_this.load.html('点击加载更多');
+					_this.load.find('span').html('下拉查看更多');
 					_this.checkPosition();
 				}
 			});
