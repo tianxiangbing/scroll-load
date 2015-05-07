@@ -13,16 +13,18 @@
 	} else if (typeof exports === 'object') { //umd
 		module.exports = factory();
 	} else {
-		root.ScrollLoad = factory(window.Zepto || window.jQuery || $, Handlebars);
+		root.ScrollLoad = factory(window.Zepto || window.jQuery || $, window.Handlebars || null);
 	}
 })(this, function($, Handlebars) {
-	Handlebars.registerHelper('isnodata', function(data,options) {
-		if(!data || data.length ==0){
-			return options.fn(this);
-		}else{
-			return options.inverse(this);
-		}
-	});
+	if (Handlebars) {
+		Handlebars.registerHelper('isnodata', function(data, options) {
+			if (!data || data.length == 0) {
+				return options.fn(this);
+			} else {
+				return options.inverse(this);
+			}
+		});
+	}
 	$.fn.ScrollLoad = function(settings) {
 		var list = [];
 		$(this).each(function() {
@@ -118,7 +120,7 @@
 				timeout: 30000,
 				success: function(result) {
 					if (_this.settings.format) {
-						_this.settings.format(this.container, result);
+						_this.settings.format(_this.container, result);
 					} else {
 						_this.format(result);
 					};
@@ -126,7 +128,7 @@
 				},
 				complete: function() {
 					// setTimeout(function() {
-						_this.ajax = false;
+					_this.ajax = false;
 					// }, 500);
 					_this.load.find('span').html('下拉查看更多');
 					_this.checkPosition();
@@ -134,7 +136,7 @@
 			});
 		},
 		format: function(result) {
-			if((!result.data ||　result.data.length==0) && this.page == 1){
+			if ((!result.data || 　result.data.length == 0) && this.page == 1) {
 				result.isnodata = true;
 			}
 			if (!(result.data && result.data.length)) {
@@ -147,6 +149,12 @@
 			var html = template(result);
 			this.container.children().first().append(html)
 			this.settings.callback && this.settings.callback(this.container, result);
+		},
+		dispose: function() {
+			var _this = this;
+			_this.load.off('click').off('touchend');
+			_this.load.remove();
+			_this.scrolltrigger.off('scroll');
 		}
 	};
 	return ScrollLoad;
