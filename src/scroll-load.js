@@ -94,12 +94,13 @@
 			}
 		},
 		checkPosition: function() {
-			var offsetH = $(this.container).children().first().height();
+			var offsetH = $(this.container).height();
+			var offsetTop = $(this.container).offset().top;
 			var height = this.load.height();
 			var clientHeight = this.scrolltrigger[0].clientHeight || document.documentElement.clientHeight || document.body.clientHeight; //可视区域
 			var clientWidth = this.scrolltrigger[0].clientWidth || document.documentElement.clientWidth || document.body.clientWidth;
 			var scrollTop = this.scrolltrigger.scrollTop();
-			if (offsetH + height / 2 <= clientHeight + scrollTop) {
+			if (offsetTop +offsetH <= clientHeight + scrollTop) {
 				this.ajaxData();
 			}
 		},
