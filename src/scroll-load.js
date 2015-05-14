@@ -47,7 +47,10 @@
 	};
 	ScrollLoad.prototype = {
 		init: function(settings) {
-			this.settings = $.extend({}, settings);
+			this.settings = $.extend({
+				scrollLoad: true,
+				max: 20
+			}, settings);
 			this.load = this.settings.loadmore || $('<div class="ui-loading"><span>下拉查看更多</span><hr/></div>');
 			this.scrolltrigger = $(this.settings.scrolltrigger || window);
 			this.container = this.settings.container;
@@ -56,12 +59,14 @@
 			}
 			this.container.append(this.load);
 			this.url = this.settings.url;
-			this.page = this.settings.page || 1;
+			this.settings.page === undefined ? this.page = 1 : this.page = this.settings.page;
 			this.pagename = settings.pagename || 'page';
 			this.param = $.extend({}, this.settings.param);
 			this.param[this.pagename] = this.page;
 			this.bindEvent();
-			this.checkPosition();
+			if (this.settings.scrollLoad) {
+				this.checkPosition();
+			}
 		},
 		touch: function(obj, fn) {
 			var move;
@@ -87,6 +92,12 @@
 					_this.scrolltrigger.scroll(function() {
 						_this.checkPosition();
 					});
+				} else {
+					if (_this.scrolltrigger.swipeUp) {
+						_this.scrolltrigger.swipeUp(function() {
+							_this.checkPosition();
+						});
+					};
 				}
 				_this.touch(_this.load, function() {
 					_this.ajaxData();
@@ -94,13 +105,17 @@
 			}
 		},
 		checkPosition: function() {
+			if (this.page >= this.settings.max) {
+				this.settings.maxCallback &&this.settings.maxCallback.call(this);
+				return false;
+			}
 			var offsetH = $(this.container).height();
 			var offsetTop = $(this.container).offset().top;
 			var height = this.load.height();
 			var clientHeight = this.scrolltrigger[0].clientHeight || document.documentElement.clientHeight || document.body.clientHeight; //可视区域
 			var clientWidth = this.scrolltrigger[0].clientWidth || document.documentElement.clientWidth || document.body.clientWidth;
 			var scrollTop = this.scrolltrigger.scrollTop();
-			if (offsetTop +offsetH <= clientHeight + scrollTop) {
+			if (offsetTop + offsetH <= clientHeight + scrollTop) {
 				this.ajaxData();
 			}
 		},
@@ -121,7 +136,7 @@
 				timeout: 30000,
 				success: function(result) {
 					if (_this.settings.format) {
-						_this.settings.format(_this.container, result);
+						_this.settings.format(_this.container, result, _this.page);
 					} else {
 						_this.format(result);
 					};
@@ -133,6 +148,9 @@
 					// }, 500);
 					_this.load.find('span').html('下拉查看更多');
 					_this.checkPosition();
+					if (_this.page >= _this.settings.max) {
+						_this.load.hide();
+					}
 				}
 			});
 		},
@@ -156,6 +174,7 @@
 			_this.load.off('click').off('touchend');
 			_this.load.remove();
 			_this.scrolltrigger.off('scroll');
+			$(_this.scrolltrigger).off('swipeUp')
 		}
 	};
 	return ScrollLoad;
