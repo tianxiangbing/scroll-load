@@ -66,6 +66,11 @@
 			this.bindEvent();
 			if (this.settings.scrollLoad) {
 				this.checkPosition();
+			} else {
+				var _this = this;
+				setTimeout(function() {
+					_this.checkPosition();
+				}, 3000);
 			}
 		},
 		touch: function(obj, fn) {
@@ -93,8 +98,8 @@
 						_this.checkPosition();
 					});
 				} else {
-					if (_this.scrolltrigger.swipeUp) {
-						_this.scrolltrigger.swipeUp(function() {
+					if (_this.scrolltrigger.scroll) {
+						_this.scrolltrigger.scroll(function() {
 							_this.checkPosition();
 						});
 					};
@@ -106,7 +111,7 @@
 		},
 		checkPosition: function() {
 			if (this.page >= this.settings.max) {
-				this.settings.maxCallback &&this.settings.maxCallback.call(this);
+				this.settings.maxCallback && this.settings.maxCallback.call(this);
 				return false;
 			}
 			var offsetH = $(this.container).height();
@@ -131,7 +136,7 @@
 				url: _this.url,
 				type: _this.settings.type || "get",
 				dataType: "json",
-				cache: false,
+				cache: _this.settings.cache || false,
 				data: _this.param,
 				timeout: 30000,
 				success: function(result) {
