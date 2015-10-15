@@ -126,7 +126,7 @@
 		},
 		ajaxData: function() {
 			var _this = this;
-			if (_this.ajax) {
+			if (_this.ajax||_this.end) {
 				return false;
 			}
 			_this.ajax = true;
@@ -146,18 +146,20 @@
 						_this.format(result);
 					};
 					_this.page++;
-				},
-				complete: function() {
-					// setTimeout(function() {
-					_this.ajax = false;
-					// }, 500);
-					_this.load.find('span').html('下拉查看更多');
 					_this.checkPosition();
+				},
+				complete: function(result) {
+					_this.ajax = false;
+					_this.load.find('span').html('下拉查看更多');
 					if (_this.page >= _this.settings.max) {
 						_this.load.hide();
 					}
 				}
-			});
+			}).done(function(result){
+				if(result.data&&result.data.length==0){
+					_this.end =true;
+				}
+			})
 		},
 		format: function(result) {
 			if ((!result.data || 　result.data.length == 0) && this.page == 1) {
