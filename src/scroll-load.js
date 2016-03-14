@@ -7,6 +7,12 @@
  */
 ;
 (function(root, factory) {
+	if (typeof define === 'function' && define.cmd) {
+		define(function(require, exports, module) {
+			var $ = require("jquery");
+			return factory($);
+		});
+	} else
 	//amd
 	if (typeof define === 'function' && define.amd) {
 		define(['$', 'handlebars'], factory);
@@ -141,15 +147,15 @@
 				timeout: 30000,
 				success: function(result) {
 					if (_this.settings.format) {
-						_this.settings.format(_this.container, result, _this.page);
+						_this.settings.format.call(_this,_this.container, result, _this.page);
 					} else {
 						_this.format(result);
 					};
 					_this.page++;
+					_this.ajax = false;
 					_this.checkPosition();
 				},
 				complete: function(result) {
-					_this.ajax = false;
 					_this.load.find('span').html('下拉查看更多');
 					if (_this.page >= _this.settings.max) {
 						_this.load.hide();
@@ -169,12 +175,14 @@
 				result.nodata = true;
 				this.load.remove();
 			}
-			var tpl = typeof this.settings.tpl === "string" ? $(this.settings.tpl) : this.settings.tpl;
-			var source = tpl.html();
-			var template = Handlebars.compile(source);
-			var html = template(result);
-			this.container.children().first().append(html)
-			this.settings.callback && this.settings.callback(this.container, result);
+			if(Handlebars){
+				var tpl = typeof this.settings.tpl === "string" ? $(this.settings.tpl) : this.settings.tpl;
+				var source = tpl.html();
+				var template = Handlebars.compile(source);
+				var html = template(result);
+				this.container.children().first().append(html);
+			}
+			this.settings.callback && this.settings.callback.call(this,this.container, result);
 		},
 		dispose: function() {
 			var _this = this;
